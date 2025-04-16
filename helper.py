@@ -17,25 +17,28 @@ def is_time_between(begin_time, end_time, check_time=None):
     '''
     Checks if given time in between (begin_time, end_time)
     '''
-    check_time = check_time or datetime.utcnow().time()
+    tz = timezone("Asia/Kolkata") # updated to timezone to kolkata so now only have to enter indian standard time --(KEVAL P.)
+    if check_time is None:
+        check_time = datetime.now(tz).time()
     if begin_time < end_time:
         return check_time >= begin_time and check_time <= end_time
-    else: # crosses midnight
+    else: # if it crosses midnight
         return check_time >= begin_time or check_time <= end_time
     
 def is_attendance_given_today():
-    return False
     userlist = fetch_query("select userID from user_data")
-    for user in userlist:
-        attendance_record_string = fetch_query(f"select attendance_time from attendance_tracker where userID = {user[0]}")[0][0]  #the [0][0] is just for formatting, it now returns string of attendance records seperated by comma
-        attendance_record_list = attendance_record_string.split(',')[:-1] #ignoring last element cause in string of attendance_records_string it always ends with a comma, so the last element of the list split using comma will be an empty element. 
-        if attendance_record_list ==[]:
-            continue
-        else:
-            if datetime.now(timezone("Asia/Kolkata")).strftime('%Y-%m-%d') in attendance_record_list[-1]:
-                    return True
-    return False
-
+    try: # handled couple of exceptions -- (KEVAL P.)
+        for user in userlist:
+            attendance_record_string = fetch_query(f"select attendance_time from attendance_tracker where userID = {user[0]}")[0][0]  #the [0][0] is just for formatting, it now returns string of attendance records seperated by comma
+            attendance_record_list = attendance_record_string.split(',')[:-1] #ignoring last element cause in string of attendance_records_string it always ends with a comma, so the last element of the list split using comma will be an empty element. 
+            if attendance_record_list ==[]:
+                continue
+            else:
+                if datetime.now(timezone("Asia/Kolkata")).strftime('%Y-%m-%d') in attendance_record_list[-1]:
+                        return True
+        return False 
+    except:
+        return False
 
 def attendance_counter(userID):
     return fetch_query(f"select attendance_counter from attendance_tracker where userID = {userID}")[0][0]
