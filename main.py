@@ -9,6 +9,7 @@ from datetime import datetime, time
 from sqlconnect import fetch_query, update_query
 from discord.ext import commands, tasks
 from helper import *
+import re
 
 #setting temp dev vars
 valid_time_check = False
@@ -154,16 +155,21 @@ async def on_message(message):
 
     #attendance counter
     if message.content.startswith('!counter'):
-        await message.channel.send("Your attendance counter is " + str(fetch_query(f"select attendance_counter from attendance_tracker where userID = {message.author.id}")[0][0]))
+        counter_number = int(fetch_query(f"select attendance_counter from attendance_tracker where userID = {message.author.id}")[0][0])
+        await message.channel.send(f"Your attendance counter is {counter_number}")
+        filtered_dates = attendance_to_the_date(message.author.id)
+        await message.channel.send(f"and you have given attendance on {filtered_dates}")
         await message.channel.send("---------------------------------")
         userlist = fetch_query("select username, userID from user_data")
         try: # One exceptional case if only one person is in the attendace_tracker ka list it will handle -- (KEVAL P.)
             for name,id in userlist:
                 if id != message.author.id:
-                    attendance_for_each_user = str(fetch_query(f"select attendance_counter from attendance_tracker where userID = {id}")[0][0])
-                    await message.channel.send(f"{name} has given attendance {attendance_for_each_user} times.")
+                    attendance_for_each_user = int(fetch_query(f"select attendance_counter from attendance_tracker where userID = {id}")[0][0])
+                    filtered_dates = attendance_to_the_date(id)
+                    await message.channel.send(f"{name} has given attendance {attendance_for_each_user+1} times on {filtered_dates}.")
         except:
             await message.channel.send(f"Only {message.author} has given attendance till now")      
+
 ###########################################
 '''  TASKS  ''' 
 
