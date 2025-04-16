@@ -1,6 +1,7 @@
 from datetime import datetime, time
 from pytz import timezone 
 from sqlconnect import fetch_query, update_query
+import re
 
 def get_userID(username : str):
     '''
@@ -47,3 +48,11 @@ def least_attendance_given_by():
     userlist = fetch_query("select userID, attendance_counter from attendance_tracker")
     userlist.sort(key=lambda x: x[1])
     return userlist[0][0]
+
+def attendance_to_the_date(id):
+    attendance_date = list(fetch_query(f"select attendance_time from attendance_tracker where userID= {id}"))
+    dates_as_string = attendance_date[0][0]
+    dates_as_list = dates_as_string.split(',')[:-1]
+    date_pattern = r'\d{4}-\d{2}-\d{2}'
+    filtered_dates = [re.search(date_pattern, x).group(0) for x in dates_as_list if re.search(date_pattern, x)]
+    return filtered_dates
