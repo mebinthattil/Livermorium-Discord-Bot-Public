@@ -9,7 +9,6 @@ from datetime import datetime, time
 from sqlconnect import fetch_query, update_query
 from discord.ext import commands, tasks
 from helper import *
-import re
 
 #setting temp dev vars
 valid_time_check = False
