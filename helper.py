@@ -2,6 +2,7 @@ from datetime import datetime, time
 from pytz import timezone 
 from sqlconnect import fetch_query, update_query
 import re
+import calendar
 
 def get_userID(username : str):
     '''
@@ -37,8 +38,9 @@ def is_attendance_given_today():
             else:
                 if datetime.now(timezone("Asia/Kolkata")).strftime('%Y-%m-%d') in attendance_record_list[-1]:
                         return True
-        return False 
-    except:
+        return False
+    except Exception as e:
+        print(f"some error {e}")
         return False
 
 def attendance_counter(userID):
@@ -49,10 +51,20 @@ def least_attendance_given_by():
     userlist.sort(key=lambda x: x[1])
     return userlist[0][0]
 
-def attendance_to_the_date(id):
-    attendance_date = list(fetch_query(f"select attendance_time from attendance_tracker where userID= {id}"))
+def attendance_to_the_date(user_id):
+    result = []
+    days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    query = "SELECT attendance_time FROM attendance_tracker WHERE userID = %s"
+    attendance_date = list(fetch_query(query, (user_id,))) # made it sql injection safeee
     dates_as_string = attendance_date[0][0]
     dates_as_list = dates_as_string.split(',')[:-1]
     date_pattern = r'\d{4}-\d{2}-\d{2}'
-    filtered_dates = [re.search(date_pattern, x).group(0) for x in dates_as_list if re.search(date_pattern, x)]
-    return filtered_dates
+    filter_dates = [re.search(date_pattern, x).group(0) for x in dates_as_list if re.search(date_pattern, x)]
+    for user_data in filter_dates[:10]:
+        year,month,day = map(int, user_data.split('-'))
+        dayNumber = calendar.weekday(year,month,day)
+        the_day = str(days[dayNumber])
+        day = str(day)
+        combined_result = the_day + " -> " + day
+        result.append(combined_result)
+    return result
