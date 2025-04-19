@@ -54,8 +54,7 @@ def least_attendance_given_by():
 def attendance_to_the_date(user_id):
     result = []
     days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-    query = "SELECT attendance_time FROM attendance_tracker WHERE userID = %s"
-    attendance_date = list(fetch_query(query, (user_id,))) # made it sql injection safeee
+    attendance_date = list(fetch_query(f"SELECT attendance_time FROM attendance_tracker WHERE userID = {user_id}")) # made it sql injection safeee
     dates_as_string = attendance_date[0][0]
     dates_as_list = dates_as_string.split(',')[:-1]
     date_pattern = r'\d{4}-\d{2}-\d{2}'
