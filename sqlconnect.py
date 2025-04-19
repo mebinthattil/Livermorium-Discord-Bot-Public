@@ -13,12 +13,9 @@ mydb = mysql.connector.connect(
   database="livermorium-discord-bot"
 )
 
-def fetch_query(query, parameter=None):
+def fetch_query(query):
     mycursor = mydb.cursor()
-    if parameter:
-        mycursor.execute(query, parameter)  
-    else:
-        mycursor.execute(query)
+    mycursor.execute(query)
     result = mycursor.fetchall()
     mycursor.close()
     return list(result)
