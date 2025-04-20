@@ -14,8 +14,6 @@ mydb = mysql.connector.connect(
 )
 
 def fetch_query(query):
-
-
     mycursor = mydb.cursor()
     mycursor.execute(query)
     result = mycursor.fetchall()
@@ -23,15 +21,12 @@ def fetch_query(query):
     return list(result)
 
 def update_query(query):
-
     mycursor = mydb.cursor()
     mycursor.execute(query)
     mydb.commit()
     mycursor.close()
     return None
 
-
 def attendance_counter(userID):
     return fetch_query(f"select attendance_counter from attendance_tracker where userID = {userID}")[0][0]
 
-#print(attendance_counter(1247531982846689401))
