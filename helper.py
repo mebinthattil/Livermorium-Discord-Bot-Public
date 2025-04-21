@@ -2,6 +2,7 @@ from datetime import datetime, time
 from pytz import timezone 
 from sqlconnect import fetch_query, update_query
 import re
+import calendar
 
 def get_userID(username : str):
     '''
@@ -27,19 +28,30 @@ def is_time_between(begin_time, end_time, check_time=None):
         return check_time >= begin_time or check_time <= end_time
     
 def is_attendance_given_today():
-    userlist = fetch_query("select userID from user_data")
-    try: # handled couple of exceptions -- (KEVAL P.)
-        for user in userlist:
-            attendance_record_string = fetch_query(f"select attendance_time from attendance_tracker where userID = {user[0]}")[0][0]  #the [0][0] is just for formatting, it now returns string of attendance records seperated by comma
-            attendance_record_list = attendance_record_string.split(',')[:-1] #ignoring last element cause in string of attendance_records_string it always ends with a comma, so the last element of the list split using comma will be an empty element. 
-            if attendance_record_list ==[]:
-                continue
-            else:
-                if datetime.now(timezone("Asia/Kolkata")).strftime('%Y-%m-%d') in attendance_record_list[-1]:
+    '''
+    
+    This function collects infromation of userID and Time from attendance_tracker table of database and then compare s it with today s date
+    and provide data if the user has given attendance or not, thats all
+    
+    '''
+    try:
+        attendance_record = fetch_query("SELECT userID, attendance_time FROM attendance_tracker") 
+        if not attendance_record:
+            return False
+        else:
+            for user_id, time in attendance_record:
+                today_time=datetime.now(timezone("Asia/Kolkata")).strftime('%Y-%m-%d')
+                for_check_time = time.split(',')[:-1]
+                date_data = list(map(lambda s: datetime.strptime(s, '%Y-%m-%d %H:%M:%S.%f').strftime('%Y-%m-%d'), for_check_time))
+                if date_data == []:
+                    continue
+                else:
+                    if today_time in date_data:
                         return True
-        return False 
-    except:
+    except Exception as e:
+        print(f"Some error: {e}")
         return False
+
 
 def attendance_counter(userID):
     return fetch_query(f"select attendance_counter from attendance_tracker where userID = {userID}")[0][0]
@@ -49,10 +61,19 @@ def least_attendance_given_by():
     userlist.sort(key=lambda x: x[1])
     return userlist[0][0]
 
-def attendance_to_the_date(id):
-    attendance_date = list(fetch_query(f"select attendance_time from attendance_tracker where userID= {id}"))
+def attendance_to_the_date(user_id):
+    result = []
+    days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    attendance_date = list(fetch_query(f"SELECT attendance_time FROM attendance_tracker WHERE userID = {user_id}")) # made it sql injection safeee
     dates_as_string = attendance_date[0][0]
     dates_as_list = dates_as_string.split(',')[:-1]
     date_pattern = r'\d{4}-\d{2}-\d{2}'
-    filtered_dates = [re.search(date_pattern, x).group(0) for x in dates_as_list if re.search(date_pattern, x)]
-    return filtered_dates
+    filter_dates = [re.search(date_pattern, x).group(0) for x in dates_as_list if re.search(date_pattern, x)]
+    for user_data in filter_dates[:7]:
+        year,month,day = map(int, user_data.split('-'))
+        dayNumber = calendar.weekday(year,month,day)
+        the_day = str(days[dayNumber])
+        day = str(day)
+        combined_result = the_day + " -> " + day
+        result.append(combined_result)
+    return result

@@ -10,6 +10,7 @@ from sqlconnect import fetch_query, update_query
 from discord.ext import commands, tasks
 from helper import *
 
+
 #setting temp dev vars
 valid_time_check = False
 
@@ -26,7 +27,8 @@ mydb = mysql.connector.connect(
   host="localhost",
   user=database_user,
   passwd=database_pwd,
-  database="livermorium-discord-bot"
+  database="livermorium-discord-bot",
+  autocommit=True
 )
 mycursor = mydb.cursor()
 
@@ -34,7 +36,7 @@ mycursor = mydb.cursor()
 intents = Intents.default()
 intents.message_content = True
 client = discord.Client(intents=intents)
-admins = [1247531982846689401]
+admins = [1247531982846689401,862890206054580244] # hmmm......
 
 
 
@@ -65,8 +67,8 @@ async def on_message(message):
 
     #ping to check if online
     if message.content.startswith('!ping'):
-        await message.channel.send('Wasgud '+str(message.author.name) ) 
-    
+        await message.channel.send('Hello '+str(message.author.name)) 
+
     #registering user
     if message.content.startswith('!register'):
         mycursor = mydb.cursor()
@@ -77,34 +79,34 @@ async def on_message(message):
             mycursor.execute(f"INSERT INTO attendance_tracker (userID, attendance_time, attendance_counter) VALUES ({message.author.id}, '', 0)")
             mydb.commit()
             await message.channel.send(str(message.author)+' You have been registered!')
-        else:
+        else:   
             await message.channel.send(str(message.author)+' You are already registered!')
     
     #attendance
     if message.content.startswith('!attendance'):
 
         #FIRST CHECK IF SENT IN TIME & IF NO ATTENDANCE GIVEN TODAY
-        if (is_time_between(time(1,30), time(13,30) or valid_time_check ) and (not is_attendance_given_today())) : #corresponds to 6PM to 7PM
+        if (is_time_between(time(18,00), time(19,00) or valid_time_check ) and (not is_attendance_given_today())) : #corresponds to 6PM to 7PM
             mycursor = mydb.cursor()
             mycursor.execute(f"SELECT * FROM user_data WHERE userID = {message.author.id}")
             result = mycursor.fetchone()
-            
+
             if result == None: #checking if user is registered
                 await message.channel.send(str(message.author)+' You are not registered!')
             
             else: #this means user is registered
                 mycursor.execute(f"SELECT * FROM attendance_tracker WHERE userID = {message.author.id}")
                 result = mycursor.fetchone()
-
+                
                 def appended_data():
                         #ATTENDANCE COUNTER
                         mycursor = mydb.cursor()
                         india_time = datetime.now(timezone("Asia/Kolkata")).strftime('%Y-%m-%d %H:%M:%S.%f')
                         attendance_counter = fetch_query(f"SELECT attendance_counter FROM attendance_tracker WHERE userID = {message.author.id}")
-                        if attendance_counter == None:
+                        if attendance_counter == []:
                             attendance_counter = 0
                         else:
-                            attendance_counter = int(attendance_counter[0])
+                            attendance_counter = int(attendance_counter[0][0])# convert to integer
                         mycursor.close()
 
                         #TIME COUNTER
@@ -118,7 +120,7 @@ async def on_message(message):
                         mycursor.close()
                         mycursor = mydb.cursor()
                         return attendance_time, attendance_counter
-
+                
                 if result == None: #this means giving attendance for first time
                     attendance_time, attendance_counter = appended_data()
                     mycursor.execute("INSERT INTO attendance_tracker (userID, attendance_time, attendance_counter) VALUES (%s, %s, %s)", (message.author.id, attendance_time, attendance_counter+1))
@@ -155,20 +157,33 @@ async def on_message(message):
 
     #attendance counter
     if message.content.startswith('!counter'):
-        await message.channel.send("Your attendance counter is " + str(fetch_query(f"select attendance_counter from attendance_tracker where userID = {message.author.id}")[0][0]))
-        await message.channel.send("---------------------------------")
-        userlist = fetch_query("select username, userID from user_data")
-        for name,id in userlist:
-            if id != message.author.id:
-                attendance_for_each_user = str(fetch_query(f"select attendance_counter from attendance_tracker where userID = {id}")[0][0])
-                await message.channel.send(f"{name} has given attendance {attendance_for_each_user} times.")
-            
+        try:
+            counter_number = int(fetch_query(f"select attendance_counter from attendance_tracker where userID = {message.author.id}")[0][0])
+            await message.channel.send(f"Your attendance counter is {counter_number}")
+            filtered_dates = attendance_to_the_date(message.author.id)
+            await message.channel.send(f"and you have given attendance on {filtered_dates}")
+            await message.channel.send("---------------------------------")
+            userlist = fetch_query("select username, userID from user_data")
+            try: # One exceptional case if only one person is in the attendace_tracker ka list it will handle -- (KEVAL P.)
+                for name,id in userlist:
+                    if id != message.author.id:
+                        attendance_for_each_user = int(fetch_query(f"select attendance_counter from attendance_tracker where userID = {id}")[0][0])
+                        filtered_dates = attendance_to_the_date(id)
+                        await message.channel.send(f"{name} has given attendance {attendance_for_each_user+1} times on {filtered_dates}.")
+            except Exception as e:
+                print(f"The error is {e}. smth is wrong")
+                await message.channel.send(f"Only {message.author} has given attendance till now")
+        except IndexError:
+            await message.channel.send(f"No body is in the database")
+
+ 
+
 ###########################################
 '''  TASKS  ''' 
 
 @tasks.loop(minutes=10) 
 async def attendance_reminder():
-    if is_time_between(time(13,00), time(13,30) ) and (not is_attendance_given_today()):
+    if is_time_between(time(18,30), time(19,00) ) and (not is_attendance_given_today()): # here time changed to (Kolkata/India) -- (KEVAL P.)
        userID = str(least_attendance_given_by())
        for guild in client.guilds:
             for channel in guild.text_channels:
