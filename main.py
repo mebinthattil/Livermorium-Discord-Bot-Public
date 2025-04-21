@@ -140,10 +140,11 @@ async def on_message(message):
                     await message.channel.send(str(message.author)+' Good job giving attendance! \n You have give attendance '+str(attendance_counter+1)+' times!')
 
         else:
-            if is_attendance_given_today():
+          if is_attendance_given_today():
                 await message.channel.send("Attendance is already marked today")
-            else:
+          else:
                 await message.channel.send("Chill out dude, its not even attendance time yet.")
+            
 
     #logs for admins         
     if message.content.startswith('!logs'):
