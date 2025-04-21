@@ -10,15 +10,13 @@ mydb = mysql.connector.connect(
   host="localhost",
   user=database_user,
   passwd=database_pwd,
-  database="livermorium-discord-bot"
+  database="livermorium-discord-bot",
+  autocommit=True # very nice line, upadates stuff instantly
 )
 
-def fetch_query(query, parameter=None):
+def fetch_query(query):
     mycursor = mydb.cursor()
-    if parameter:
-        mycursor.execute(query, parameter)  
-    else:
-        mycursor.execute(query)
+    mycursor.execute(query)
     result = mycursor.fetchall()
     mycursor.close()
     return list(result)
