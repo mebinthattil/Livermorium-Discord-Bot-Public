@@ -166,7 +166,7 @@ async def on_message(message):
             try: # One exceptional case if only one person is in the attendace_tracker ka list it will handle -- (KEVAL P.)
                 for name,id in userlist:
                     if id != message.author.id:
-                        attendance_for_each_user = int(fetch_query(f"select attendance_counter from attendance_tracker where userID = {id}"))
+                        attendance_for_each_user = int(fetch_query(f"select attendance_counter from attendance_tracker where userID = {id}")[0][0])
                         filtered_dates = attendance_to_the_date(id)
                         await message.channel.send(f"{name} has given attendance {attendance_for_each_user+1} times on {filtered_dates}.")
             except Exception as e:
