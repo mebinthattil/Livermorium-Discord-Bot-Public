@@ -10,6 +10,7 @@ from sqlconnect import fetch_query, update_query
 from discord.ext import commands, tasks
 from helper import *
 
+
 #setting temp dev vars
 valid_time_check = False
 
@@ -26,7 +27,8 @@ mydb = mysql.connector.connect(
   host="localhost",
   user=database_user,
   passwd=database_pwd,
-  database="livermorium-discord-bot"
+  database="livermorium-discord-bot",
+  autocommit=True
 )
 mycursor = mydb.cursor()
 
@@ -77,7 +79,7 @@ async def on_message(message):
             mycursor.execute(f"INSERT INTO attendance_tracker (userID, attendance_time, attendance_counter) VALUES ({message.author.id}, '', 0)")
             mydb.commit()
             await message.channel.send(str(message.author)+' You have been registered!')
-        else:
+        else:   
             await message.channel.send(str(message.author)+' You are already registered!')
     
     #attendance
@@ -88,23 +90,23 @@ async def on_message(message):
             mycursor = mydb.cursor()
             mycursor.execute(f"SELECT * FROM user_data WHERE userID = {message.author.id}")
             result = mycursor.fetchone()
-            
+
             if result == None: #checking if user is registered
                 await message.channel.send(str(message.author)+' You are not registered!')
             
             else: #this means user is registered
                 mycursor.execute(f"SELECT * FROM attendance_tracker WHERE userID = {message.author.id}")
                 result = mycursor.fetchone()
-
+                
                 def appended_data():
                         #ATTENDANCE COUNTER
                         mycursor = mydb.cursor()
                         india_time = datetime.now(timezone("Asia/Kolkata")).strftime('%Y-%m-%d %H:%M:%S.%f')
                         attendance_counter = fetch_query(f"SELECT attendance_counter FROM attendance_tracker WHERE userID = {message.author.id}")
-                        if attendance_counter == []:# changed to list cause it is a list type -- (KEVAL P.) 
+                        if attendance_counter == []:
                             attendance_counter = 0
                         else:
-                            attendance_counter = int(attendance_counter[0][0])# convert to integer 
+                            attendance_counter = int(attendance_counter[0][0])# convert to integer
                         mycursor.close()
 
                         #TIME COUNTER
@@ -138,10 +140,11 @@ async def on_message(message):
                     await message.channel.send(str(message.author)+' Good job giving attendance! \n You have give attendance '+str(attendance_counter+1)+' times!')
 
         else:
-            if is_attendance_given_today():
+          if is_attendance_given_today():
                 await message.channel.send("Attendance is already marked today")
-            else:
+          else:
                 await message.channel.send("Chill out dude, its not even attendance time yet.")
+            
 
     #logs for admins         
     if message.content.startswith('!logs'):

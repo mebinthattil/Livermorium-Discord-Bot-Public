@@ -10,7 +10,8 @@ mydb = mysql.connector.connect(
   host="localhost",
   user=database_user,
   passwd=database_pwd,
-  database="livermorium-discord-bot"
+  database="livermorium-discord-bot",
+  autocommit=True # very nice line, upadates stuff instantly
 )
 
 def fetch_query(query):

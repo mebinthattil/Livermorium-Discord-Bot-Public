@@ -3,3 +3,6 @@ test.py
 logs.txt
 __pycache__
 cloud-compute-engine.json.env
+settings.json
+.env
+.vscode
