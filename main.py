@@ -86,7 +86,7 @@ async def on_message(message):
     if message.content.startswith('!attendance'):
 
         #FIRST CHECK IF SENT IN TIME & IF NO ATTENDANCE GIVEN TODAY
-        if (is_time_between(time(18,00), time(19,00) or valid_time_check ) and (not is_attendance_given_today())) : #corresponds to 6PM to 7PM
+        if (is_time_between(time(00,00), time(19,00) or valid_time_check ) and (not is_attendance_given_today())) : #corresponds to 6PM to 7PM
             mycursor = mydb.cursor()
             mycursor.execute(f"SELECT * FROM user_data WHERE userID = {message.author.id}")
             result = mycursor.fetchone()
@@ -174,6 +174,12 @@ async def on_message(message):
                 await message.channel.send(f"Only {message.author} has given attendance till now")
         except IndexError:
             await message.channel.send(f"No body is in the database")
+    
+    if message.content.startswith('!food'):
+        weeek, day, food = check_week()
+        await message.channel.send(f"for the week = {weeek}\nday is = {day}\nfood is = {food}") # adding a message option 
+
+        
 
  
 

@@ -1,8 +1,24 @@
-from datetime import datetime, time
+from datetime import datetime, time, date, timedelta
 from pytz import timezone 
 from sqlconnect import fetch_query, update_query
 import re
 import calendar
+import mysql.connector
+
+myfile = open("secrets.txt", 'r')
+secret_file_contents = myfile.read().split('\n')
+database_user, database_pwd, token = secret_file_contents[:3]
+myfile.close()
+
+mydb = mysql.connector.connect(
+  host="localhost",
+  user=database_user,
+  passwd=database_pwd,
+  database="livermorium-discord-bot",
+  autocommit=True
+)
+mycursor = mydb.cursor()
+
 
 def get_userID(username : str):
     '''
@@ -71,9 +87,86 @@ def attendance_to_the_date(user_id):
     filter_dates = [re.search(date_pattern, x).group(0) for x in dates_as_list if re.search(date_pattern, x)]
     for user_data in filter_dates[:7]:
         year,month,day = map(int, user_data.split('-'))
-        dayNumber = calendar.weekday(year,month,day)
+        dayNumber = calendar.weekday(year,month,day+1)
         the_day = str(days[dayNumber])
         day = str(day)
         combined_result = the_day + " -> " + day
         result.append(combined_result)
     return result
+
+def check_week():
+    
+    end_dates_str = [x[0] for x in fetch_query("SELECT end_date FROM tracker")][-1] if fetch_query("SELECT end_date FROM tracker") else None
+    today_date_str = datetime.now(timezone("Asia/Kolkata")).strftime('%Y-%m-%d')
+
+    if end_dates_str is None: # here add auto date and week adder function
+        return None, None, None
+    
+    days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
+    year,month,dayy = map(int, today_date_str.split('-'))
+    dayNumber = calendar.weekday(year,month,dayy+1)
+    day = str(days[dayNumber])
+    
+    try:
+        end_date = datetime.strptime(end_dates_str, '%Y-%m-%d')
+        today_date = datetime.strptime(today_date_str, '%Y-%m-%d')
+    except Exception as e:
+        print(f"Some error: {e}")
+        return None, None, None # week day fooditem
+
+    if (end_date >= today_date):
+        which_week = fetch_query(f"select week from tracker where end_date = '{end_dates_str}'")[0][0]
+        if is_time_between(time(00,00),time(8,00)):
+            the_food = fetch_query(f"select BREAKFAST from {which_week} where DAY = '{day}'")[0][0]
+            print(f"date is {today_date_str}")
+            return which_week, day, the_food
+        if is_time_between(time(8,1),time(13,59)):
+            the_food = fetch_query(f"select LUNCH from {which_week} where DAY = '{day}'")[0][0]
+            return which_week, day, the_food
+        if is_time_between(time(14,00),time(18,00)):
+            the_food = fetch_query(f"select SNACKS from {which_week} where DAY = '{day}'")[0][0]
+            return which_week, day, the_food
+        if is_time_between(time(18,1),time(23,59)):
+            the_food = fetch_query(f"select DINNER from {which_week} where DAY = '{day}'")[0][0]
+            return which_week, day, the_food
+
+    elif(end_date < today_date):
+
+        six_days = timedelta(days=6)
+        one_day = timedelta(days=1)
+        weeks = ['week1','week2','week3','week4']
+        this_week = fetch_query(f"select week from tracker where end_date = '{end_dates_str}'")[0][0]
+        week = weeks.index(this_week)
+        while (end_date<today_date):
+            week = (week + 1) % len(weeks)
+            week_to_insert = weeks[week]
+            year,month,dayy=map(int, end_dates_str.split('-'))
+            start_date_prv = date(year,month,dayy)
+            start_date = start_date_prv + one_day
+            end_date = start_date + six_days
+            end_dates_str = str(end_date)
+            start_date_str = str(start_date)
+            mycursor.execute(f"INSERT INTO tracker (start_date,end_date,week) VALUES ('{start_date_str}','{end_dates_str}','{week_to_insert}')")
+            end_date = datetime.strptime(end_dates_str, '%Y-%m-%d')
+
+        which_week = fetch_query(f"select week from tracker where end_date = '{end_dates_str}'")[0][0]
+        if is_time_between(time(00,00),time(8,00)):
+            the_food = fetch_query(f"select BREAKFAST from {which_week} where DAY = '{day}'")[0][0]
+            return which_week, day, the_food
+        if is_time_between(time(8,1),time(13,59)):
+            the_food = fetch_query(f"select LUNCH from {which_week} where DAY = '{day}'")[0][0]
+            return which_week, day, the_food
+        if is_time_between(time(14,00),time(18,00)):
+            the_food = fetch_query(f"select SNACKS from {which_week} where DAY = '{day}'")[0][0]
+            return which_week, day, the_food
+        if is_time_between(time(18,1),time(23,59)):
+            the_food = fetch_query(f"select DINNER from {which_week} where DAY = '{day}'")
+            print(the_food)
+            return which_week, day, the_food
+
+        
+
+
+
+
+        
