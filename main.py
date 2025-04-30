@@ -1,6 +1,6 @@
 # imports
 import discord
-from discord.ui import button, view
+from discord.ui import button, View
 from discord.ext import commands
 from discord import Intents
 import mysql.connector
@@ -38,8 +38,32 @@ intents.message_content = True
 client = discord.Client(intents=intents)
 admins = [1247531982846689401,862890206054580244] # hmmm......
 
+class SimpleView(View):
 
+    def __init__(self, week : str, day : str):
+        super().__init__()
+        self.week = week
+        self.day = day
 
+    @button(label="Breakfast",style=discord.ButtonStyle.success)
+    async def breakfast(self, interaction: discord.Interaction, button: discord.ui.Button):
+        food_data = fetch_query(f"select BREAKFAST from {self.week} where DAY = '{self.day}'")[0][0]
+        await interaction.response.send_message(f"For breakfast on {self.day} ({self.week}), you can have: {food_data}")
+        
+    @button(label="Lunch",style=discord.ButtonStyle.success)
+    async def lunch(self, interaction: discord.Interaction, button: discord.ui.Button):
+        food_data = fetch_query(f"select LUNCH from {self.week} where DAY = '{self.day}'")[0][0]
+        await interaction.response.send_message(f"For lunch on {self.day} ({self.week}), you can have: {food_data}")
+
+    @button(label="Snack",style=discord.ButtonStyle.success)
+    async def snack(self, interaction: discord.Interaction, button: discord.ui.Button):
+        food_data = fetch_query(f"select SNACKS from {self.week} where DAY = '{self.day}'")[0][0]
+        await interaction.response.send_message(f"For snacks on {self.day} ({self.week}), you can have: {food_data}")
+
+    @button(label="Dinner",style=discord.ButtonStyle.success)
+    async def dinner(self, interaction: discord.Interaction, button: discord.ui.Button):
+        food_data = fetch_query(f"select DINNER from {self.week} where DAY = '{self.day}'")[0][0]
+        await interaction.response.send_message(f"For dinner on {self.day} ({self.week}), you can have: {food_data}")
 
 #####################################################################            
 
@@ -177,13 +201,11 @@ async def on_message(message):
             await message.channel.send(f"No body is in the database")
     
     if message.content.startswith('!food'):
-        weeek, day, food = check_week()
-        await message.channel.send(f"for the week = {weeek}\nday is = {day}\nfood is = {food}") # adding a message option 
-
-        
+        weeek, day = check_week()
+        food_view = SimpleView(week=weeek, day=day)
+        await message.channel.send(f"Kya chahiye re apko {day} {weeek}?", view=food_view) # adding a message option 
 
  
-
 ###########################################
 '''  TASKS  ''' 
 
@@ -195,6 +217,5 @@ async def attendance_reminder():
             for channel in guild.text_channels:
                 if channel.name == "attendance" and channel.permissions_for(guild.me).send_messages:
                     await channel.send(f"Attendance is not given today, please give it fast. <@{userID}> it would be good if you gave attendance today." )
-
 
 client.run(token)

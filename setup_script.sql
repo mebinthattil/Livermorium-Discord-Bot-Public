@@ -40,26 +40,7 @@ USE `livermorium-discord-bot`;
 -- ('SAT', 'Onion Dosa, Sagu, Chutney, Tea/Coffee, Milk', 'Palak Veg, Rice, Sambhar, Lemon Rice, Dal, Butter Milk, Pickle', 'Masala Vada', 'Fish Fry, Aloo Palak, Rice, Dal, Rasam, Pickle');
 
 -- Create the 'week2' table
-CREATE TABLE IF NOT EXISTS week2 (
-    DAY VARCHAR(3),
-    BREAKFAST VARCHAR(255),
-    LUNCH VARCHAR(255),
-    SNACKS VARCHAR(255),
-    DINNER VARCHAR(255)
-);
-
--- Insert data into the 'week2' table
-INSERT INTO week2 (DAY, BREAKFAST, LUNCH, SNACKS, DINNER) VALUES
-('SUN', 'Idly-Vada, Sambar, Chutney, Tea/Coffee', 'Chana Masala, Rice, Pulao, Roti, Dal, Pickle', 'Lemon Rice', 'Hyderabadi Veg Biryani, Raita, Mirchi Ka Salan'),
-('MON', 'Upma, Sambar, Tea/Coffee, Milk', 'Rajma Chawal, Rice, Dal, Palak Paneer, Pickle', 'Kachori', 'Mushroom Mutter Masala, Dal Makhani, Rice, Pickle'),
-('TUE', 'Sagu, Rice Bath, Chutney, Milk/Tea/Coffee', 'Makki Di Roti, Sarson Ka Saag, Choley, Dal, Sambar', 'Veg Puff', 'Sweet Corn Curry, Dal, Rice, Chapathi, Pickle'),
-('WED', 'Tomato Rice, Sambar, Chutney, Tea/Coffee', 'Aloo Mutter, Tomato Rice, Palak Dal, Veg Biryani, Raita, Pickle', 'Mathi Rajma', 'Aloo Gobi Curry, Dal, Rice, Roti, Pickle'),
-('THU', 'Poha, Rajma, Lemon Rice, Milk/Tea/Coffee', 'Dal Tadka, Palak Paneer, Rice, Sambhar, Butter Milk, Pickle', 'Noodles', 'Chappathi, Chana Masala, Rice, Dal, Pickle'),
-('FRI', 'Aloo Paratha, Curd, Pickle, Tea/Coffee', 'Dal Palak, Carrot Rice, Rice, Sambhar, Pickle', 'Tea/Coffee', 'Chicken Curry, Rice, Dal, Sambhar, Pickle'),
-('SAT', 'Dosa, Rice, Sambar, Chutney, Rasam, Pickle', 'Aloo Gobi, Chappathi, Dal, Rice, Rasam, Pickle', 'Cornflakes', 'Tomato Rice, Dal, Roti, Bhindi Fry, Pickle');
-
--- -- Create the 'week3' table
--- CREATE TABLE week3 (
+-- CREATE TABLE IF NOT EXISTS week2 (
 --     DAY VARCHAR(3),
 --     BREAKFAST VARCHAR(255),
 --     LUNCH VARCHAR(255),
@@ -67,15 +48,34 @@ INSERT INTO week2 (DAY, BREAKFAST, LUNCH, SNACKS, DINNER) VALUES
 --     DINNER VARCHAR(255)
 -- );
 
--- -- Insert data into the 'week3' table
--- INSERT INTO week3 (DAY, BREAKFAST, LUNCH, SNACKS, DINNER) VALUES
--- ('SUN', 'Chole Bhature, Sevige Bath, Chutney, Milk/Tea/Coffee', 'Dal Rice, Sambhar, Veg Pulao, Aloo Palya, Pickle', 'Jhal Muri', 'Mini Feast'),
--- ('MON', 'Idly-Vada, Sambhar, Chutney, Tea/Coffee', 'Palak Dal, Coconut Rice, Rice, Sambhar, Butter Milk, Pickle', 'Pasta', 'Chappathi, Dal, Egg Curry, Rice, Pickle'),
--- ('TUE', 'Methi Dal Paratha, Sagu, Chutney, Milk/Tea/Coffee', 'Bread Pakoda, Rice, Sambhar, Butter Milk, Pickle', 'Chowmein', 'Dal Egg Fry, Rice, Curd, Pickle'),
--- ('WED', 'Masala Dosa, Chutney, Sambhar, Milk/Tea/Coffee', 'Dal Rice, Rajma, Pickle, Veg Curry, Raita, Pickle', 'Tea/Coffee', 'Chappathi, Sagu, Dal, Rice, Pickle'),
--- ('THU', 'Idli Sambhar, Kitchadi Bath, Tea/Coffee, Milk', 'Tomato Rice, Dal Palak, Sagu, Maggi Masala, Pickle', 'Vada Pav', 'Chicken Curry, Dal, Rice, Pickle'),
--- ('FRI', 'Veg Roll, Rice Bath, Chutney, Milk/Tea/Coffee', 'Rajma Chawal, Palya, Dal, Sambhar, Rasam, Curd, Pickle', 'Sev Puri', 'Veg Biryani, Raita, Pickle'),
--- ('SAT', 'Poha, Sagu Pongal, Chutney, Milk/Tea/Coffee', 'Dal, Sambhar, Lemon Rice, Veg Curry, Pickle', 'Tea/Coffee', 'Tomato Rice, Dal, Sambhar, Pickle');
+-- -- Insert data into the 'week2' table
+-- INSERT INTO week2 (DAY, BREAKFAST, LUNCH, SNACKS, DINNER) VALUES
+-- ('SUN', 'Idly-Vada, Sambar, Chutney, Tea/Coffee', 'Chana Masala, Rice, Pulao, Roti, Dal, Pickle', 'Lemon Rice', 'Hyderabadi Veg Biryani, Raita, Mirchi Ka Salan'),
+-- ('MON', 'Upma, Sambar, Tea/Coffee, Milk', 'Rajma Chawal, Rice, Dal, Palak Paneer, Pickle', 'Kachori', 'Mushroom Mutter Masala, Dal Makhani, Rice, Pickle'),
+-- ('TUE', 'Sagu, Rice Bath, Chutney, Milk/Tea/Coffee', 'Makki Di Roti, Sarson Ka Saag, Choley, Dal, Sambar', 'Veg Puff', 'Sweet Corn Curry, Dal, Rice, Chapathi, Pickle'),
+-- ('WED', 'Tomato Rice, Sambar, Chutney, Tea/Coffee', 'Aloo Mutter, Tomato Rice, Palak Dal, Veg Biryani, Raita, Pickle', 'Mathi Rajma', 'Aloo Gobi Curry, Dal, Rice, Roti, Pickle'),
+-- ('THU', 'Poha, Rajma, Lemon Rice, Milk/Tea/Coffee', 'Dal Tadka, Palak Paneer, Rice, Sambhar, Butter Milk, Pickle', 'Noodles', 'Chappathi, Chana Masala, Rice, Dal, Pickle'),
+-- ('FRI', 'Aloo Paratha, Curd, Pickle, Tea/Coffee', 'Dal Palak, Carrot Rice, Rice, Sambhar, Pickle', 'Tea/Coffee', 'Chicken Curry, Rice, Dal, Sambhar, Pickle'),
+-- ('SAT', 'Dosa, Rice, Sambar, Chutney, Rasam, Pickle', 'Aloo Gobi, Chappathi, Dal, Rice, Rasam, Pickle', 'Cornflakes', 'Tomato Rice, Dal, Roti, Bhindi Fry, Pickle');
+
+-- Create the 'week3' table
+CREATE TABLE week3 (
+    DAY VARCHAR(3),
+    BREAKFAST VARCHAR(255),
+    LUNCH VARCHAR(255),
+    SNACKS VARCHAR(255),
+    DINNER VARCHAR(255)
+);
+
+-- Insert data into the 'week3' table
+INSERT INTO week3 (DAY, BREAKFAST, LUNCH, SNACKS, DINNER) VALUES
+('SUN', 'Chole Bhature, Sevige Bath, Chutney, Milk/Tea/Coffee', 'Dal Rice, Sambhar, Veg Pulao, Aloo Palya, Pickle', 'Jhal Muri', 'Mini Feast'),
+('MON', 'Idly-Vada, Sambhar, Chutney, Tea/Coffee', 'Palak Dal, Coconut Rice, Rice, Sambhar, Butter Milk, Pickle', 'Pasta', 'Chappathi, Dal, Egg Curry, Rice, Pickle'),
+('TUE', 'Methi Dal Paratha, Sagu, Chutney, Milk/Tea/Coffee', 'Bread Pakoda, Rice, Sambhar, Butter Milk, Pickle', 'Chowmein', 'Dal Egg Fry, Rice, Curd, Pickle'),
+('WED', 'Masala Dosa, Chutney, Sambhar, Milk/Tea/Coffee', 'Dal Rice, Rajma, Pickle, Veg Curry, Raita, Pickle', 'Tea/Coffee', 'Chappathi, Sagu, Dal, Rice, Pickle'),
+('THU', 'Idli Sambhar, Kitchadi Bath, Tea/Coffee, Milk', 'Tomato Rice, Dal Palak, Sagu, Maggi Masala, Pickle', 'Vada Pav', 'Chicken Curry, Dal, Rice, Pickle'),
+('FRI', 'Veg Roll, Rice Bath, Chutney, Milk/Tea/Coffee', 'Rajma Chawal, Palya, Dal, Sambhar, Rasam, Curd, Pickle', 'Sev Puri', 'Veg Biryani, Raita, Pickle'),
+('SAT', 'Poha, Sagu Pongal, Chutney, Milk/Tea/Coffee', 'Dal, Sambhar, Lemon Rice, Veg Curry, Pickle', 'Tea/Coffee', 'Tomato Rice, Dal, Sambhar, Pickle');
 
 -- -- Create the 'week4' table
 -- CREATE TABLE week4 (

@@ -102,9 +102,9 @@ def check_week():
     if end_dates_str is None: # here add auto date and week adder function
         return None, None, None
     
-    days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
+    days = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"]
     year,month,dayy = map(int, today_date_str.split('-'))
-    dayNumber = calendar.weekday(year,month,dayy+1)
+    dayNumber = calendar.weekday(year,month,dayy)
     day = str(days[dayNumber])
     
     try:
@@ -116,19 +116,7 @@ def check_week():
 
     if (end_date >= today_date):
         which_week = fetch_query(f"select week from tracker where end_date = '{end_dates_str}'")[0][0]
-        if is_time_between(time(00,00),time(8,00)):
-            the_food = fetch_query(f"select BREAKFAST from {which_week} where DAY = '{day}'")[0][0]
-            print(f"date is {today_date_str}")
-            return which_week, day, the_food
-        if is_time_between(time(8,1),time(13,59)):
-            the_food = fetch_query(f"select LUNCH from {which_week} where DAY = '{day}'")[0][0]
-            return which_week, day, the_food
-        if is_time_between(time(14,00),time(18,00)):
-            the_food = fetch_query(f"select SNACKS from {which_week} where DAY = '{day}'")[0][0]
-            return which_week, day, the_food
-        if is_time_between(time(18,1),time(23,59)):
-            the_food = fetch_query(f"select DINNER from {which_week} where DAY = '{day}'")[0][0]
-            return which_week, day, the_food
+        return which_week, day
 
     elif(end_date < today_date):
 
@@ -150,23 +138,4 @@ def check_week():
             end_date = datetime.strptime(end_dates_str, '%Y-%m-%d')
 
         which_week = fetch_query(f"select week from tracker where end_date = '{end_dates_str}'")[0][0]
-        if is_time_between(time(00,00),time(8,00)):
-            the_food = fetch_query(f"select BREAKFAST from {which_week} where DAY = '{day}'")[0][0]
-            return which_week, day, the_food
-        if is_time_between(time(8,1),time(13,59)):
-            the_food = fetch_query(f"select LUNCH from {which_week} where DAY = '{day}'")[0][0]
-            return which_week, day, the_food
-        if is_time_between(time(14,00),time(18,00)):
-            the_food = fetch_query(f"select SNACKS from {which_week} where DAY = '{day}'")[0][0]
-            return which_week, day, the_food
-        if is_time_between(time(18,1),time(23,59)):
-            the_food = fetch_query(f"select DINNER from {which_week} where DAY = '{day}'")
-            print(the_food)
-            return which_week, day, the_food
-
-        
-
-
-
-
-        
+        return which_week, day
