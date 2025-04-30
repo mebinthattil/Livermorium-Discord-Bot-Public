@@ -65,6 +65,33 @@ class SimpleView(View):
         food_data = fetch_query(f"select DINNER from {self.week} where DAY = '{self.day}'")[0][0]
         await interaction.response.send_message(f"For dinner on {self.day} ({self.week}), you can have: {food_data}")
 
+class WeekChange(View):
+
+    def __init__(self, end_date : str):
+        super().__init__()
+        self.end_date = end_date
+
+    @button(label="WEEK-1",style=discord.ButtonStyle.success)
+    async def week1(self, interaction: discord.Interaction, button: discord.ui.Button):
+        mycursor.execute(f"UPDATE tracker SET week = 'week1' WHERE end_date = '{self.end_date}'")
+        await interaction.response.send_message(f"changed succesfully to week1")
+    
+    @button(label="WEEK-2",style=discord.ButtonStyle.success)
+    async def week2(self, interaction: discord.Interaction, button: discord.ui.Button):
+        mycursor.execute(f"UPDATE tracker SET week = 'week2' WHERE end_date = '{self.end_date}'")
+        await interaction.response.send_message(f"changed succesfully to week2")
+
+    @button(label="WEEK-3",style=discord.ButtonStyle.success)
+    async def week3(self, interaction: discord.Interaction, button: discord.ui.Button):
+        mycursor.execute(f"UPDATE tracker SET week = 'week3' WHERE end_date = '{self.end_date}'")
+        await interaction.response.send_message(f"changed succesfully to week3")
+
+    @button(label="WEEK-4",style=discord.ButtonStyle.success)
+    async def week4(self, interaction: discord.Interaction, button: discord.ui.Button):
+        mycursor.execute(f"UPDATE tracker SET week = 'week4' WHERE end_date = '{self.end_date}'")
+        await interaction.response.send_message(f"changed succesfully to week4")
+
+
 #####################################################################            
 
 @client.event
@@ -205,7 +232,13 @@ async def on_message(message):
         food_view = SimpleView(week=weeek, day=day)
         await message.channel.send(f"Kya chahiye re apko {day} {weeek}?", view=food_view) # adding a message option 
 
- 
+    if message.content.startswith('!update'):
+        weeek, day = check_week() # this will update the neccesary information of the week in the week tracker
+        end_dates_str = [x[0] for x in fetch_query("SELECT end_date FROM tracker")][-1] if fetch_query("SELECT end_date FROM tracker") else None
+        updatess = WeekChange(end_date=end_dates_str)
+        await message.channel.send(f"Nowadays {weeek} select the good one", view=updatess)
+
+
 ###########################################
 '''  TASKS  ''' 
 

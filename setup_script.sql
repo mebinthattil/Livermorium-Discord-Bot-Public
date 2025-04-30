@@ -21,7 +21,7 @@ VALUES
 (1247531982846689401,"meb_t");
 
 -- Create the 'week1' table
-CREATE TABLE week1 (
+CREATE TABLE IF NOT EXISTS week1 (
     DAY VARCHAR(3),
     BREAKFAST VARCHAR(255),
     LUNCH VARCHAR(255),
@@ -59,7 +59,7 @@ INSERT INTO week2 (DAY, BREAKFAST, LUNCH, SNACKS, DINNER) VALUES
 ('SAT', 'Dosa, Rice, Sambar, Chutney, Rasam, Pickle', 'Aloo Gobi, Chappathi, Dal, Rice, Rasam, Pickle', 'Cornflakes', 'Tomato Rice, Dal, Roti, Bhindi Fry, Pickle');
 
 -- Create the 'week3' table
-CREATE TABLE week3 (
+CREATE TABLE IF NOT EXISTS week3 (
     DAY VARCHAR(3),
     BREAKFAST VARCHAR(255),
     LUNCH VARCHAR(255),
@@ -78,7 +78,7 @@ INSERT INTO week3 (DAY, BREAKFAST, LUNCH, SNACKS, DINNER) VALUES
 ('SAT', 'Poha, Sagu Pongal, Chutney, Milk/Tea/Coffee', 'Dal, Sambhar, Lemon Rice, Veg Curry, Pickle', 'Tea/Coffee', 'Tomato Rice, Dal, Sambhar, Pickle');
 
 -- Create the 'week4' table
-CREATE TABLE week4 (
+CREATE TABLE IF NOT EXISTS week4 (
     DAY VARCHAR(3),
     BREAKFAST VARCHAR(255),
     LUNCH VARCHAR(255),
