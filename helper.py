@@ -100,7 +100,7 @@ def check_week():
     today_date_str = datetime.now(timezone("Asia/Kolkata")).strftime('%Y-%m-%d')
 
     if end_dates_str is None: # here add auto date and week adder function
-        return None, None, None
+        return None, None
     
     days = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"]
     year,month,dayy = map(int, today_date_str.split('-'))

@@ -101,3 +101,6 @@ CREATE TABLE tracker(
     end_date TEXT,
     week TEXT
 );
+
+INSERT INTO tracker(start_date, end_date, week) VALUES
+('2025-03-23','2025-03-29','week2');
