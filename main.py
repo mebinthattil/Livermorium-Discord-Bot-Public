@@ -101,6 +101,7 @@ async def on_ready():
     print(client.user.id)
     print('------')
     attendance_reminder.start()
+    laundry.start()
 
 @client.event
 async def on_message(message):
@@ -137,7 +138,7 @@ async def on_message(message):
     if message.content.startswith('!attendance'):
 
         #FIRST CHECK IF SENT IN TIME & IF NO ATTENDANCE GIVEN TODAY
-        if (is_time_between(time(00,00), time(19,00) or valid_time_check ) and (not is_attendance_given_today())) : #corresponds to 6PM to 7PM
+        if (is_time_between(time(18,00), time(19,00) or valid_time_check ) and (not is_attendance_given_today())) : #corresponds to 6PM to 7PM
             mycursor = mydb.cursor()
             mycursor.execute(f"SELECT * FROM user_data WHERE userID = {message.author.id}")
             result = mycursor.fetchone()
@@ -244,11 +245,27 @@ async def on_message(message):
 
 @tasks.loop(minutes=10) 
 async def attendance_reminder():
-    if is_time_between(time(18,30), time(19,00) ) and (not is_attendance_given_today()): # here time changed to (Kolkata/India) -- (KEVAL P.)
+    if is_time_between(time(18,30), time(19,00) ) and (not is_attendance_given_today()):
        userID = str(least_attendance_given_by())
        for guild in client.guilds:
             for channel in guild.text_channels:
                 if channel.name == "attendance" and channel.permissions_for(guild.me).send_messages:
                     await channel.send(f"Attendance is not given today, please give it fast. <@{userID}> it would be good if you gave attendance today." )
+
+@tasks.loop(minutes=15)
+async def laundry():
+    if is_time_between(time(18,00), time(19,00)) and (laundry_day()):
+        what_today = laundry_day(True)
+        for guild in client.guilds:
+             for channel in guild.text_channels:
+                if what_today == "TAKE":
+                    if channel.name == "laundry" and channel.permissions_for(guild.me).send_messages:
+                        await channel.send(f"@everyone **_TAKE_** cloths **FROM** laundry today")
+                if what_today == "GIVE":
+                    if channel.name == "laundry" and channel.permissions_for(guild.me).send_messages:
+                        await channel.send(f"@everyone **_GIVE_** cloths **FOR** laundry today")
+                if what_today == None:
+                    print("Nothing today")
+
 
 client.run(token)
