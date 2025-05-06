@@ -139,3 +139,22 @@ def check_week():
 
         which_week = fetch_query(f"select week from tracker where end_date = '{end_dates_str}'")[0][0]
         return which_week, day
+    
+def laundry_day(loop=None):
+    today_date_str = datetime.now(timezone("Asia/Kolkata")).strftime('%Y-%m-%d')
+    days = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"]
+    year,month,dayy = map(int, today_date_str.split('-'))
+    dayNumber = calendar.weekday(year,month,dayy)
+    day = str(days[dayNumber])
+    if loop:
+        if day == "MON" or day == "THU":
+            return "TAKE"
+        elif day ==  "TUE" or day == "FRI":
+            return "GIVE"
+        else:
+            return None
+    else:  
+        if day ==  "SAT" or day == "SUN" or day == "WED":
+            return False
+        else:
+            return True
