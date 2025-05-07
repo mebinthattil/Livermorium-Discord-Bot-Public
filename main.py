@@ -197,6 +197,43 @@ async def on_message(message):
           else:
                 await message.channel.send("Chill out dude, its not even attendance time yet.")
             
+    if message.content.startswith('!laundry'):
+        if (laundry_day("give") and check_user_reg(message.author.id)):
+            mycursor = mydb.cursor()
+            given_date, taking_date = dates_for_laundry()
+            mycursor.execute("INSERT INTO not_taken (given_d,taken_d,userID) VALUES (%s, %s, %s)",(given_date,taking_date,message.author.id))
+            await message.channel.send(f"@{message.author.id} OK please collect on {taking_date}")
+            mydb.commit()
+            mycursor.close()
+        else:
+            if not check_user_reg(message.author.id):
+                today_date = datetime.now(timezone("Asia/Kolkata")).strftime('%Y-%m-%d')
+                given_date = fetch_query(f"SELECT given_d FROM not_taken WHERE userID = {message.authon.id}")[0][0]
+
+                if today_date == given_date:
+                    await message.channel.send(f"@{message.author.id} you have given your cloths for laundry on {given_date}")
+                else:
+                    await message.channel.send(f"@{message.author.id} **better collect your laundry** cloths are still in the laundry from {given_date}")
+
+            if not laundry_day("give"):
+                today_day = laundry_day("day")
+                await message.channel.send(f"@{message.author.id} Sir, Today is **{today_day}** so no laundry giving")
+
+
+    if message.content.startswith('!collected'):
+        if ((laundry_day("take") or laundry_day("give")) and (not check_user_reg(message.author.id))):
+            mycursor = mydb.cursor()
+            mycursor.execute(f"DELETE FROM not_taken WHERE userID = {message.author.id}")
+            mydb.commit()
+            mycursor.close()
+        else:
+            if not laundry_day("take") and not laundry_day("give"):
+                await message.channel.send(f"@{message.author.id} Sir, Today is **{today_day}** so no laundry taking or giving ")
+
+            if check_user_reg(message.author.id):
+                await message.channel.send(f"@{message.author.id} Sir, you collected it")
+
+
 
     #logs for admins         
     if message.content.startswith('!logs'):
@@ -254,18 +291,33 @@ async def attendance_reminder():
 
 @tasks.loop(minutes=15)
 async def laundry():
-    if is_time_between(time(18,00), time(19,00)) and (laundry_day()):
-        what_today = laundry_day(True)
+    if is_time_between(time(00,00), time(19,00)) and (laundry_day("take") or laundry_day("give")):
+        if laundry_day("take"):
+            action = "take"
+        if laundry_day("give"):
+            action = "give"
+        
+        late_ppl_collect,on_date_collect = collect_pls()
+
         for guild in client.guilds:
              for channel in guild.text_channels:
-                if what_today == "TAKE":
+                if action == "take":
+                    if late_ppl_collect:
+                        for user in late_ppl_collect:
+                            if channel.name == "laundry" and channel.permissions_for(guild.me).send_messages:
+                                await channel.send(f"@{int(user)} **_TAKE_** cloths **FROM** laundry today")
+                    if on_date_collect:
+                        for user in on_date_collect:
+                            if channel.name == "laundry" and channel.permissions_for(guild.me).send_messages:
+                                await channel.send(f"@{int(user)} **_TAKE_** cloths **FROM** laundry today")
+
+                if action == "give":
+                    if late_ppl_collect:
+                        for user in late_ppl_collect:
+                            if channel.name == "laundry" and channel.permissions_for(guild.me).send_messages:
+                                await channel.send(f"@{int(user)} **_TAKE_** cloths **FROM** laundry today, _btw you can't give today_")
                     if channel.name == "laundry" and channel.permissions_for(guild.me).send_messages:
-                        await channel.send(f"@everyone **_TAKE_** cloths **FROM** laundry today")
-                if what_today == "GIVE":
-                    if channel.name == "laundry" and channel.permissions_for(guild.me).send_messages:
-                        await channel.send(f"@everyone **_GIVE_** cloths **FOR** laundry today")
-                if what_today == None:
-                    print("Nothing today")
+                                await channel.send(f"@everyone **_GIVE_** cloths **FOR** laundry today")
 
 
 client.run(token)

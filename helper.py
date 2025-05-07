@@ -146,15 +146,65 @@ def laundry_day(loop=None):
     year,month,dayy = map(int, today_date_str.split('-'))
     dayNumber = calendar.weekday(year,month,dayy)
     day = str(days[dayNumber])
-    if loop:
-        if day == "MON" or day == "THU":
-            return "TAKE"
-        elif day ==  "TUE" or day == "FRI":
-            return "GIVE"
+
+    if loop =="give":
+        if day ==  "TUE" or day == "FRI":
+            return True
         else:
-            return None
+            return False
+        
+    elif loop == "take":
+        if day ==  "MON" or day == "THU":
+            return True
+        else:
+            return False
+        
+    elif loop == "day":
+        return day
+    
     else:  
         if day ==  "SAT" or day == "SUN" or day == "WED":
-            return False
-        else:
             return True
+        else:
+            return False
+        
+def check_user_reg(userID):
+    try:
+        guy = fetch_query(f"select userID from not_taken where userID = {userID}")[0][0]
+    except Exception as e:
+        print(e)
+        return True
+    return False
+
+def dates_for_laundry():
+    today_date_str = datetime.now(timezone("Asia/Kolkata")).strftime('%Y-%m-%d')
+    days = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"]
+    year,month,dayy = map(int, today_date_str.split('-'))
+    dayNumber = calendar.weekday(year,month,dayy)
+    day = str(days[dayNumber])
+    two_day = timedelta(days = 2)
+    three_day = timedelta(days = 3)
+    start_date = date(year,month,dayy)
+    if day == "TUE":
+        final_date = start_date + two_day
+        return today_date_str, str(final_date)
+    elif day =="FRI":
+        final_date = start_date + three_day
+        return today_date_str, str(final_date)
+
+def collect_pls():
+    today_date_str = datetime.now(timezone("Asia/Kolkata")).strftime('%Y-%m-%d')
+    year,month,dayy = map(int, today_date_str.split('-'))
+    today_date = date(year,month,dayy)
+    list_of_remaining_ppl = [x[0] for x in fetch_query("SELECT take_d FROM not_taken")]
+    lesser_date_pre = [d for d_str in list_of_remaining_ppl if (d := date.fromisoformat(d_str)) < today_date]
+    equal_date_pre = [d for d_str in list_of_remaining_ppl if (d := date.fromisoformat(d_str)) == today_date]
+
+    lesser_date = [d.strftime('%Y-%m-%d') for d in lesser_date_pre]
+    equal_date = [d.strftime('%Y-%m-%d') for d in equal_date_pre]
+
+    userid_late = [name[0][0] for dates in lesser_date if (name := fetch_query(f"SELECT userID FROM not_taken WHERE take_d ='{dates}'"))]
+    userid_ok = [name[0][0] for dates in equal_date if (name := fetch_query(f"SELECT userID FROM not_taken WHERE take_d ='{dates}'"))]
+
+    return userid_late, userid_ok
+

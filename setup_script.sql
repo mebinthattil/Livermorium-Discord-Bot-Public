@@ -104,3 +104,12 @@ CREATE TABLE tracker(
 
 INSERT INTO tracker(start_date, end_date, week) VALUES
 ('2025-03-23','2025-03-29','week2');
+
+CREATE TABLE IF NOT EXISTS not_taken(
+    given_d TEXT,
+    take_d TEXT,
+    userID BIGINT
+);
+
+INSERT INTO not_taken (given_d,take_d,userID) VALUES
+('2025-05-03','2025-05-04',862890206054580244);
