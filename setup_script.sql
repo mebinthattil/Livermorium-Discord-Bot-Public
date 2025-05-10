@@ -20,7 +20,8 @@ VALUES
 (862890206054580244,"samurai_scholar"),
 (1247531982846689401,"meb_t");
 
--- Create the 'week1' table
+
+
 CREATE TABLE IF NOT EXISTS week1 (
     DAY VARCHAR(3),
     BREAKFAST VARCHAR(255),
@@ -29,7 +30,6 @@ CREATE TABLE IF NOT EXISTS week1 (
     DINNER VARCHAR(255)
 );
 
--- -- Insert data into the 'week1' table
 INSERT INTO week1 (DAY, BREAKFAST, LUNCH, SNACKS, DINNER) VALUES
 ('SUN', 'Masala Dosa, Sambar, Chutney, Tea/Coffee', 'Green Peas Pulao, Chappathi, Noodles, Tea/Coffee', 'Tea/Coffee', 'Mini Feast'),
 ('MON', 'Idly-Vada, Sambar, Chutney, Tea/Coffee', 'Palak Dal, Aloo Mutter, Rice, Dal, Green Sambar, Butter Milk, Pickle', 'Tea/Coffee', 'Rice, Sambhar, Chappathi, Dal, Sabji, Curd, Pickle'),
@@ -39,7 +39,9 @@ INSERT INTO week1 (DAY, BREAKFAST, LUNCH, SNACKS, DINNER) VALUES
 ('FRI', 'Rava Idly, Sagu, Chutney, Milk/Tea/Coffee', 'Padina Green Peas Pulao, Masala Pulao, Palya, Rice, Green Sambar, Pickle', 'Pasta', 'Paneer Butter Masala, Tomato Rice, Dal Tadka'),
 ('SAT', 'Onion Dosa, Sagu, Chutney, Tea/Coffee, Milk', 'Palak Veg, Rice, Sambhar, Lemon Rice, Dal, Butter Milk, Pickle', 'Masala Vada', 'Fish Fry, Aloo Palak, Rice, Dal, Rasam, Pickle');
 
--- Create the 'week2' table
+
+
+
 CREATE TABLE IF NOT EXISTS week2 (
     DAY VARCHAR(3),
     BREAKFAST VARCHAR(255),
@@ -48,7 +50,6 @@ CREATE TABLE IF NOT EXISTS week2 (
     DINNER VARCHAR(255)
 );
 
--- Insert data into the 'week2' table
 INSERT INTO week2 (DAY, BREAKFAST, LUNCH, SNACKS, DINNER) VALUES
 ('SUN', 'Idly-Vada, Sambar, Chutney, Tea/Coffee', 'Chana Masala, Rice, Pulao, Roti, Dal, Pickle', 'Lemon Rice', 'Hyderabadi Veg Biryani, Raita, Mirchi Ka Salan'),
 ('MON', 'Upma, Sambar, Tea/Coffee, Milk', 'Rajma Chawal, Rice, Dal, Palak Paneer, Pickle', 'Kachori', 'Mushroom Mutter Masala, Dal Makhani, Rice, Pickle'),
@@ -58,7 +59,9 @@ INSERT INTO week2 (DAY, BREAKFAST, LUNCH, SNACKS, DINNER) VALUES
 ('FRI', 'Aloo Paratha, Curd, Pickle, Tea/Coffee', 'Dal Palak, Carrot Rice, Rice, Sambhar, Pickle', 'Tea/Coffee', 'Chicken Curry, Rice, Dal, Sambhar, Pickle'),
 ('SAT', 'Dosa, Rice, Sambar, Chutney, Rasam, Pickle', 'Aloo Gobi, Chappathi, Dal, Rice, Rasam, Pickle', 'Cornflakes', 'Tomato Rice, Dal, Roti, Bhindi Fry, Pickle');
 
--- Create the 'week3' table
+
+
+
 CREATE TABLE IF NOT EXISTS week3 (
     DAY VARCHAR(3),
     BREAKFAST VARCHAR(255),
@@ -67,7 +70,6 @@ CREATE TABLE IF NOT EXISTS week3 (
     DINNER VARCHAR(255)
 );
 
--- Insert data into the 'week3' table
 INSERT INTO week3 (DAY, BREAKFAST, LUNCH, SNACKS, DINNER) VALUES
 ('SUN', 'Chole Bhature, Sevige Bath, Chutney, Milk/Tea/Coffee', 'Dal Rice, Sambhar, Veg Pulao, Aloo Palya, Pickle', 'Jhal Muri', 'Mini Feast'),
 ('MON', 'Idly-Vada, Sambhar, Chutney, Tea/Coffee', 'Palak Dal, Coconut Rice, Rice, Sambhar, Butter Milk, Pickle', 'Pasta', 'Chappathi, Dal, Egg Curry, Rice, Pickle'),
@@ -77,7 +79,9 @@ INSERT INTO week3 (DAY, BREAKFAST, LUNCH, SNACKS, DINNER) VALUES
 ('FRI', 'Veg Roll, Rice Bath, Chutney, Milk/Tea/Coffee', 'Rajma Chawal, Palya, Dal, Sambhar, Rasam, Curd, Pickle', 'Sev Puri', 'Veg Biryani, Raita, Pickle'),
 ('SAT', 'Poha, Sagu Pongal, Chutney, Milk/Tea/Coffee', 'Dal, Sambhar, Lemon Rice, Veg Curry, Pickle', 'Tea/Coffee', 'Tomato Rice, Dal, Sambhar, Pickle');
 
--- Create the 'week4' table
+
+
+
 CREATE TABLE IF NOT EXISTS week4 (
     DAY VARCHAR(3),
     BREAKFAST VARCHAR(255),
@@ -86,7 +90,6 @@ CREATE TABLE IF NOT EXISTS week4 (
     DINNER VARCHAR(255)
 );
 
--- Insert data into the 'week4' table
 INSERT INTO week4 (DAY, BREAKFAST, LUNCH, SNACKS, DINNER) VALUES
 ('SUN', 'Dosa, Sagu, Chutney, Sambhar, Tea/Coffee', 'Palak Black Chana, Dal, Rice, Sambhar, Pickle', 'Banana Bajji', 'Roti, Dal, Baingan Bharta, Rice, Pickle'),
 ('MON', 'Idly-Vada, Sambhar, Chutney, Milk/Tea/Coffee', 'Mutter Mushroom, Dal Makhani, Rice, Butter Milk, Pickle', 'Noodles', 'Chappathi, Dal, Veg Curry, Rice, Pickle'),
@@ -96,7 +99,10 @@ INSERT INTO week4 (DAY, BREAKFAST, LUNCH, SNACKS, DINNER) VALUES
 ('FRI', 'Idly, Sambhar, Chutney, Tomato Rice, Milk/Tea/Coffee', 'Veg Roll, Rice, Sambhar, Dal Palak, Pickle', 'Sago', 'Chicken Curry, Rice, Dal, Pickle'),
 ('SAT', 'Sambhar, Tomato Rice, Chutney, Milk/Tea/Coffee', 'Veg Pulao, Chappathi, Dal, Rice, Sambhar, Pickle', 'Tea/Coffee', 'Dal, Tomato Rice, Bhindi Fry, Pickle');
 
-CREATE TABLE tracker(
+
+
+
+CREATE TABLE IF NOT EXISTS tracker(
     start_date TEXT,
     end_date TEXT,
     week TEXT
@@ -105,11 +111,11 @@ CREATE TABLE tracker(
 INSERT INTO tracker(start_date, end_date, week) VALUES
 ('2025-03-23','2025-03-29','week2');
 
+
+
 CREATE TABLE IF NOT EXISTS not_taken(
     given_d TEXT,
-    take_d TEXT,
-    userID BIGINT
+    taken_d TEXT,
+    userID BIGINT,
+    username TEXT
 );
-
-INSERT INTO not_taken (given_d,take_d,userID) VALUES
-('2025-05-03','2025-05-04',862890206054580244);
