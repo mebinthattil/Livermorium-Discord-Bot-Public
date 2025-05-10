@@ -97,7 +97,7 @@ INSERT INTO week4 (DAY, BREAKFAST, LUNCH, SNACKS, DINNER) VALUES
 ('WED', 'Plain Dosa, Chutney, Kesari Bath, Sambhar, Milk/Tea/Coffee', 'Aloo Methi Masala, Veg Pulao, Rice, Dal, Sambhar, Pickle', 'Pani Puri', 'Chicken Curry, Panner, Veg Fried Rice, Dal Makhani, Pickle'),
 ('THU', 'Puri, sabaji Tea/Coffee, Milk', 'Veg Kohlapuri, Dal Tadka Rice, Butter Milk, Pickle', 'Mirchi Bajji', 'Egg Bhurji, Aloo Bujia(unfried french fries),Dal, Rice'),
 ('FRI', 'Braed Omlet, and jam bread, Tea/Coffee, Milk', 'Soyebean sabaji _chi chi_, rice, Sambhar, Dal Palak, Pickle', 'Maggi', 'Chicken Curry, Panner Curry, Rice, Dal, Pickle'),
-('SAT', 'Idly, Sambhar, Chutney, Tomato Rice, Milk/Tea/Coffee', 'Palak Puri, Dal, Rice, Sambhar, Pickle', 'Bread Jam, Tea/Coffee', 'Baigan sabaji, Kadi Pakoda, Tomato Rice, Bhindi Fry, Pickle');
+('SAT', 'Idly, Sambhar, Chutney, Tomato Rice, Milk/Tea/Coffee', 'Palak Puri, Dal, Rice, Sambhar, Pickle', 'Bread Jam, Tea and Coffee', 'Baigan sabaji, Kadi Pakoda, Tomato Rice, Bhindi Fry, Pickle');
 
 
 
